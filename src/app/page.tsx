@@ -93,7 +93,7 @@ export default function Home() {
         )}
         {isLoading && (
           <div className="mb-4 p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 animate-pulse">
-            <p className="font-semibold text-gray-700 dark:text-gray-300">Grok</p>
+            <p className="font-semibold text-gray-700 dark:text-gray-300">MapGPT</p>
             <p className="mt-1 text-gray-500 dark:text-gray-400">Thinking...</p>
           </div>
         )}
