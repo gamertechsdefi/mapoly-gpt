@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import cheerio from 'cheerio';
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
+// interface Message {
+//   role: 'user' | 'assistant';
+//   content: string;
+// }
 
 async function fetchMapolyBlogNews(): Promise<string> {
   try {
