@@ -55,7 +55,7 @@ export default function Home() {
     <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'} transition-colors duration-300`}>
       {/* Header */}
       <header className="w-full max-w-3xl mx-auto px-4 pt-4 flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Grok Chat</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Mapoly GPT Chat</h1>
         <button
           onClick={() => setIsDarkMode(!isDarkMode)}
           className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
