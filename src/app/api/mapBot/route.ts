@@ -96,6 +96,3 @@ details: error instanceof Error ? error.stack : undefined
 }, { status: 500 });
 }
 }
-
-Help me update to add a prompt parameters it's gonna work with
-
