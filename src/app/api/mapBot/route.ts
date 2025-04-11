@@ -35,20 +35,33 @@ return 'Failed to fetch news from the Mapoly blog.';
 }
 
 async function callGrokAPI(prompt: string, apiKey: string): Promise<string> {
-const apiEndpoint = 'https://api.x.ai/v1/chat/completions';
-const response = await fetch(apiEndpoint, {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-'Authorization': `Bearer ${apiKey}`,
-},
-body: JSON.stringify({
-model: 'grok-2-latest',
-messages: [{ role: 'user', content: prompt }],
-max_tokens: 500,
-temperature: 0.7,
-}),
-});
+  const apiEndpoint = 'https://api.x.ai/v1/chat/completions';
+  try {
+    const response = await fetch(apiEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'grok-2-latest',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 500,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0]?.message?.content || 'No response content';
+  } catch (error) {
+    console.error('Error calling Grok API:', error);
+    throw error;
+  }
+}
 
 const contentType = response.headers.get('content-type');
 const responseText = await response.text();
