@@ -4,26 +4,31 @@ import cheerio from 'cheerio';
 
 async function fetchMapolyBlogNews(): Promise<string> {
   try {
-    // Hypothetical Mapoly blog URL - replace with actual URL
     const url = 'https://www.myschoolgist.com/ng/tag/www-mapoly-edu-ng/';
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      },
+    });
     const $ = cheerio.load(response.data);
 
-    // Example scraping logic - adjust based on actual blog structure
-    const articles = $('article')
+    const articles = $('.post')
       .map((i, el) => {
-        const title = $(el).find('h2').text().trim() || 'No title';
-        const summary = $(el).find('p').first().text().trim() || 'No summary';
-        const link = $(el).find('a').attr('href') || url;
+        const title = $(el).find('.entry-title a').text().trim() || 'No title';
+        const summary =
+          $(el).find('.entry-content p').first().text().trim() || 'No summary';
+        const link = $(el).find('.entry-title a').attr('href') || url;
         return `${i + 1}. **${title}**: ${summary} [Read more](${link})`;
       })
       .get()
+      .slice(0, 5)
       .join('\n');
 
     return articles || 'No recent news found on the Mapoly blog.';
   } catch (error) {
     console.error('Error fetching Mapoly blog:', error);
-    return 'Failed to fetch news from the Mapoly blog.';
+    return 'Failed to fetch news from the Mapoly blog. Please try again later.';
   }
 }
 
@@ -79,7 +84,6 @@ export async function POST(request: NextRequest) {
       throw new Error('API key not configured');
     }
 
-    // Check if the prompt is asking for Mapoly news or information
     const lowerPrompt = prompt.toLowerCase();
     if (
       lowerPrompt.includes('mapoly') &&
@@ -91,18 +95,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ response: news });
     }
 
-    // Define additional context for Computer Science-related prompts
     const contexts = {
-  computerScienceHOD: 'At Mapoly, the Computer Science HOD is Dr. Orunsholu.',
-  computerScienceLocation: 'The Computer Science department is located opposite the bus shed area.',
-};
-if (lowerPrompt.includes('computer science')) {
-  finalPrompt = `${prompt}. ${contexts.computerScience}`;
-} else if (lowerPrompt.includes('electrical')) {
-  finalPrompt = `${prompt}. ${contexts.electrical}`;
-}
+      computerScience: `
+        At Moshood Abiola Polytechnic (MAPOLY), the Computer Science department is led by Dr. Orunsholu as the Head of Department (HOD). 
+        It is located opposite the bus shed area on campus.
+      `,
+      electrical: `
+        At Moshood Abiola Polytechnic (MAPOLY), the Electrical/Electronics Engineering department is part of the School of Science and Technology.
+      `,
+    };
 
-    // Call the Grok API with the final prompt
+    let finalPrompt = prompt;
+    if (lowerPrompt.includes('computer science')) {
+      finalPrompt = `${prompt}. Additional context: ${contexts.computerScience}`;
+    } else if (lowerPrompt.includes('electrical')) {
+      finalPrompt = `${prompt}. Additional context: ${contexts.electrical}`;
+    }
+
     const grokResponse = await callGrokAPI(finalPrompt, apiKey);
     return NextResponse.json({ response: grokResponse });
   } catch (error) {
