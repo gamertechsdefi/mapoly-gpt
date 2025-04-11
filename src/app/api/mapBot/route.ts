@@ -79,6 +79,45 @@ export async function POST(request: NextRequest) {
       throw new Error('API key not configured');
     }
 
+    // Define multiple contexts with keywords and details
+    const contexts: Record<
+      string,
+      { keywords: string[]; details: string }
+    > = {
+      computerScience: {
+        keywords: [
+          'computer science',
+          'cs',
+          'hod',
+          'orunsholu',
+          'bus shed',
+          'computer department',
+        ],
+        details:
+          'At Mapoly, the Computer Science HOD is Dr. Orunsholu, and the Computer Science department is located opposite the bus shed area.',
+      },
+      electricalEngineering: {
+        keywords: [
+          'electrical engineering',
+          'ee',
+          'electrical department',
+          'main gate',
+        ],
+        details:
+          'At Mapoly, the Electrical Engineering HOD is Dr. Smith, and the department is located near the main gate.',
+      },
+      library: {
+        keywords: ['library', 'books', 'study area'],
+        details:
+          'The Mapoly library is centrally located near the admin block and offers a wide range of academic resources.',
+      },
+      admissions: {
+        keywords: ['admission', 'apply', 'enrollment', 'jamb'],
+        details:
+          'Mapoly’s admission process requires a JAMB score, online application via the Mapoly portal, and screening at the campus.',
+      },
+    };
+
     // Check if the prompt is asking for Mapoly news or information
     const lowerPrompt = prompt.toLowerCase();
     if (
@@ -91,20 +130,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ response: news });
     }
 
-    // Define additional context for Computer Science-related prompts
-    const csContext =
-      'At Mapoly, the Computer Science HOD is Dr. Orunsholu, and the Computer Science department is located opposite the bus shed area.';
-    let finalPrompt = prompt;
-
-    // Check if the prompt is about Computer Science, HOD, or location
-    if (
-      lowerPrompt.includes('computer science') ||
-      lowerPrompt.includes('hod') ||
-      lowerPrompt.includes('location') ||
-      lowerPrompt.includes('department')
-    ) {
-      finalPrompt = `${prompt}. ${csContext}`;
+    // Find matching contexts
+    let additionalContext = '';
+    for (const [topic, { keywords, details }] of Object.entries(contexts)) {
+      if (keywords.some((keyword) => lowerPrompt.includes(keyword))) {
+        additionalContext += `${details} `;
+      }
     }
+
+    // Combine prompt with additional context (if any)
+    const finalPrompt = additionalContext
+      ? `${prompt}. ${additionalContext.trim()}`
+      : prompt;
 
     // Call the Grok API with the final prompt
     const grokResponse = await callGrokAPI(finalPrompt, apiKey);
