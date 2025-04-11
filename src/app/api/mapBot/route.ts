@@ -33,34 +33,37 @@ async function fetchMapolyBlogNews(): Promise<string> {
   }
 }
 
-async function callGrokAPI(prompt: string, apiKey: string): Promise<string> {
-  const apiEndpoint = 'https://api.x.ai/v1/chat/completions';
-  const response = await fetch(apiEndpoint, {
+async function callGrokAPI(userPrompt: string, apiKey: string) {
+  const systemPrompt = `
+    You are a bot that only knows about Moshood Abiola Polytechnic (MAPOLY), Abeokuta. 
+    If the question is not related to MAPOLY (e.g., news, history, courses), respond with:
+    'I'm sorry, I can only answer questions about Moshood Abiola Polytechnic, Abeokuta.'
+    Otherwise, answer the following question:
+  `.trim();
+
+  const response = await fetch('https://api.x.ai/grok', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'grok-2-latest',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 500,
-      temperature: 0.7,
+      model: 'grok-beta',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      stream: false,
+      temperature: 0,
     }),
   });
 
-  const contentType = response.headers.get('content-type');
-  const responseText = await response.text();
-
   if (!response.ok) {
-    throw new Error(`API request failed with status ${response.status}: ${responseText}`);
-  }
-  if (!contentType?.includes('application/json')) {
-    throw new Error(`Unexpected response type: ${contentType}. Body: ${responseText}`);
+    throw new Error(`API request failed with status ${response.status}`);
   }
 
-  const data = JSON.parse(responseText);
-  return data.choices?.[0]?.message?.content || 'No response generated.';
+  const data = await response.json();
+  return data.choices[0].message.content; // Assuming response format matches xAI API
 }
 
 export async function POST(request: NextRequest) {
