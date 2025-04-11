@@ -38,7 +38,7 @@ async function callGrokAPI(prompt: string, apiKey: string): Promise<string> {
       },
       body: JSON.stringify({
         model: 'grok-2-latest',
-        messages: [{ role: 'user', content: prompt }],
+        messages: [{ role: 'user', content: `${prompt}. Computer Science HOD is Dr. Orunsholu, Computer Science is located opposite the bus shed area` }],
         max_tokens: 500,
         temperature: 0.7,
       }),
