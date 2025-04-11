@@ -122,6 +122,18 @@ websiteLink: `
       sugman: `
         Sugman is the nickname for Mr. Adebesin, one of the top lecturers in the Computer Science department
       `,
+schoolOfScienceAndTechCoursesInMapoly: `
+        There are 8 courses offered in Moshood Abiola Polytechnic as of the moment
+      `,
+schoolOfCommunicationCoursesInMapoly: `
+        There are 3 courses offered in Communication & Information Technology in Moshood Abiola Polytechnic as of the moment
+      `,
+schoolOfEngineeringCoursesInMapoly: `
+        There are 4 courses offered in School of Engineering in Moshood Abiola Polytechnic as of the moment
+      `,
+schoolOfEnviromentalStudiesCoursesInMapoly: `
+        There are 6 courses offered in school of Environmental Studies in Moshood Abiola Polytechnic as of the moment
+      `,
     };
 
     let finalPrompt = prompt;
