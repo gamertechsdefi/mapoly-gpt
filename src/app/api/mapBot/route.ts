@@ -101,22 +101,29 @@ export async function POST(request: NextRequest) {
       computerScienceLocation: `
         It is located opposite the bus shed area on campus.
       `,
-computerScienceRooms: `
+      computerScienceRooms: `
         There are 12 rooms in the computer science department.
       `,
-computerScienceFormerHOD: `
+      computerScienceFormerHOD: `
         The former HOD name is Mr. Adebayo
       `,
-sugman: `
+      sugman: `
         Sugman is the nickname for Mr. Adebesin, one of the top lecturers in the Computer Science department
       `,
     };
 
     let finalPrompt = prompt;
     if (lowerPrompt.includes('computer science')) {
-      finalPrompt = `${prompt}. Additional context: ${contexts.computerScience}`;
+      const csContext = [
+        contexts.computerScienceHOD,
+        contexts.computerScienceLocation,
+        contexts.computerScienceRooms,
+        contexts.computerScienceFormerHOD,
+        contexts.sugman,
+      ].join(' ');
+      finalPrompt = `${prompt}. Additional context: ${csContext}`;
     } else if (lowerPrompt.includes('electrical')) {
-      finalPrompt = `${prompt}. Additional context: ${contexts.electrical}`;
+      finalPrompt = prompt; // No context for electrical yet
     }
 
     const grokResponse = await callGrokAPI(finalPrompt, apiKey);
