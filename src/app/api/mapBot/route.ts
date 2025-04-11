@@ -92,19 +92,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Define additional context for Computer Science-related prompts
-    const csContext =
-      'At Mapoly, the Computer Science HOD is Dr. Orunsholu, and the Computer Science department is located opposite the bus shed area.';
-    let finalPrompt = prompt;
-
-    // Check if the prompt is about Computer Science, HOD, or location
-    if (
-      lowerPrompt.includes('computer science') ||
-      lowerPrompt.includes('hod') ||
-      lowerPrompt.includes('location') ||
-      lowerPrompt.includes('department')
-    ) {
-      finalPrompt = `${prompt}. ${csContext}`;
-    }
+    const contexts = {
+  computerScienceHOD: 'At Mapoly, the Computer Science HOD is Dr. Orunsholu.',
+  computerScienceLocation: 'The Computer Science department is located opposite the bus shed area.',
+};
+if (lowerPrompt.includes('computer science')) {
+  finalPrompt = `${prompt}. ${contexts.computerScience}`;
+} else if (lowerPrompt.includes('electrical')) {
+  finalPrompt = `${prompt}. ${contexts.electrical}`;
+}
 
     // Call the Grok API with the final prompt
     const grokResponse = await callGrokAPI(finalPrompt, apiKey);
