@@ -40,7 +40,7 @@ const response = await fetch(apiEndpoint, {
 method: 'POST',
 headers: {
 'Content-Type': 'application/json',
-'Authorization': Bearer ${apiKey},
+'Authorization': 'Bearer ${apiKey}',
 },
 body: JSON.stringify({
 model: 'grok-2-latest',
