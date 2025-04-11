@@ -96,12 +96,19 @@ export async function POST(request: NextRequest) {
     }
 
     const contexts = {
-      computerScience: `
-        At Moshood Abiola Polytechnic (MAPOLY), the Computer Science department is led by Dr. Orunsholu as the Head of Department (HOD). 
+      computerScienceHOD: `
+        At Moshood Abiola Polytechnic (MAPOLY), the Computer Science department is led by Dr. Orunsholu as the Head of Department (HOD).`,
+      computerScienceLocation: `
         It is located opposite the bus shed area on campus.
       `,
-      electrical: `
-        At Moshood Abiola Polytechnic (MAPOLY), the Electrical/Electronics Engineering department is part of the School of Science and Technology.
+computerScienceRooms: `
+        There are 12 rooms in the computer science department.
+      `,
+computerScienceFormerHOD: `
+        The former HOD name is Mr. Adebayo
+      `,
+sugman: `
+        Sugman is the nickname for Mr. Adebesin, one of the top lecturers in the Computer Science department
       `,
     };
 
