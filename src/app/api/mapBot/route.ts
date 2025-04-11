@@ -107,17 +107,17 @@ export async function POST(request: NextRequest) {
       computerScienceFormerHOD: `
         The former HOD name is Mr. Adebayo
       `,
-coursesofferedHND2: `
+coursesOfferedHND2: `
         The HND2 of Computer Science department are currently offering 7 courses 
       `,
-coursesofferedHND1: `
+coursesOfferedHND1: `
         The HND1 of Computer Science department are currently offering 8 courses 
       `,
-coursesofferedND1: `
+coursesOfferedND1: `
         The HND1 of Computer Science department are currently offering 12 courses`,
-coursesofferedND2: `
+coursesOfferedND2: `
         The ND2 of Computer Science department are currently offering 10 courses`,
-websitelink: `
+websiteLink: `
         The website link of the computer science is nacosmapoly.com `,
       sugman: `
         Sugman is the nickname for Mr. Adebesin, one of the top lecturers in the Computer Science department
