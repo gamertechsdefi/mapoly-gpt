@@ -38,7 +38,7 @@ async function callGrokAPI(prompt: string, apiKey: string): Promise<string> {
       },
       body: JSON.stringify({
         model: 'grok-2-latest',
-        messages: [{ role: 'user', content: `${prompt}. Computer Science HOD is Dr. Orunsholu, Computer Science is located opposite the bus shed area` }],
+        messages: [{ role: 'user', content: prompt }],
         max_tokens: 500,
         temperature: 0.7,
       }),
@@ -91,8 +91,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ response: news });
     }
 
-    // Otherwise, call the Grok API
-    const grokResponse = await callGrokAPI(prompt, apiKey);
+    // Define additional context for Computer Science-related prompts
+    const csContext =
+      'At Mapoly, the Computer Science HOD is Dr. Orunsholu, and the Computer Science department is located opposite the bus shed area.';
+    let finalPrompt = prompt;
+
+    // Check if the prompt is about Computer Science, HOD, or location
+    if (
+      lowerPrompt.includes('computer science') ||
+      lowerPrompt.includes('hod') ||
+      lowerPrompt.includes('location') ||
+      lowerPrompt.includes('department')
+    ) {
+      finalPrompt = `${prompt}. ${csContext}`;
+    }
+
+    // Call the Grok API with the final prompt
+    const grokResponse = await callGrokAPI(finalPrompt, apiKey);
     return NextResponse.json({ response: grokResponse });
   } catch (error) {
     console.error('Error in API route:', error);
