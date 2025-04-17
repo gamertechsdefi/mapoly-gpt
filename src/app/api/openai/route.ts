@@ -29,10 +29,12 @@ const computerScienceData = {
   courses_offered_in_HND1: "12 courses",
   courses_offered_in_HND2: "14 courses",
   website_link: "https://www.nacosmapoly.com",
+  head_of_class_HND2: "Blessing CEO",
+  assistant_head_of_class_HND2: "Drey",
   image_url: [
     "/assets/general pics.png"
   ],
-};
+}; 
 
 async function fetchMapolyBlogNews(): Promise<string> {
   try {
@@ -164,6 +166,8 @@ ${departmentData.future_events.map((event, i) => `${i + 1}. ${event}`).join('\n'
 Website: ${departmentData.website_link}
 Number of Lecturers: ${departmentData.number_of_lecturers}
 direction: ${departmentData.direction}
+hoc HND2: ${departmentData.head_of_class_HND2}
+assistant hoc HND2: ${departmentData.assistant_head_of_class_HND2}
 
 ` : ''}
 `.trim();
