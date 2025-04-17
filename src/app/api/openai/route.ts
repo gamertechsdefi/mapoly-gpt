@@ -187,7 +187,8 @@ departmental general secretary: ${departmentData.general_secretary}
 departmental software director: ${departmentData.software_director}
 departmental sport director: ${departmentData.sport_director}
 departmental software director: ${departmentData.software_director}
-
+departmental financial secretary: ${departmentData.financial_secretary}
+departmental public relation officers: ${departmentData.public_relation_officers}
 ` : ''}
 `.trim();
 
