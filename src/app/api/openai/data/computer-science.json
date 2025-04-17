@@ -1,0 +1,24 @@
+{
+    "department_name": "Computer Science",
+    "location": "ICT Center, opposite the bus shed area",
+    "vision": "To be the leading technology department in the world",
+    "past_events": [
+      "Project & Seminar Defense Supervision for Academic Staffs in the department on 26th march 2025 ",
+      "New ICT center launched on campus.",
+      "2025 Matriculation holds on May 5th."
+    ],
+    "future_events": [
+        "Project and seminar orientation for students in ND II & HND II on 23rd of April, 2025",
+        "Release of dedicated account of payment of departmental projects dues 2025 on 25th of April, 2025",
+        "Release of guiding materials for seminar writing and project implementation for 2025 on 27th of April, 2025.",
+        "Project topics proposal and seminar titles submission and defense on May 5th to 7th, 2025",
+        "Release of approved project and seminar works and commencement on May 8th, 2025"
+      ],
+    "current_head_of_department": "Dr. Orunsholu",
+    "previous_head_of_department": "Mr. Adebayo",
+    "courses_offered_in_ND1": "8 courses",
+    "courses_offered_in_ND2": "10 courses",
+    "courses_offered_in_HND1": "12 courses",
+    "courses offered_in_HND2": "14 courses"
+  }
+  
