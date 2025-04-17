@@ -31,6 +31,17 @@ const computerScienceData = {
   website_link: "https://www.nacosmapoly.com",
   head_of_class_HND2: "Blessing CEO",
   assistant_head_of_class_HND2: "Drey",
+  president: "Master Oladele Philip popluarly known as Code Doctor, but can't debug a thing",
+  vice_president1: "Marklin Mayowa, also known as Mayor. He is the Vice President 1",
+  vice_president2: "Oloyede Ademola",
+  general_secretary: "Olasupo Kayode, popularly known as Kay",
+  software_director: "Afolabi Abayomi, popularly known as Afoo",
+  social_director: "Rabiu Kabiru, called Dinero by the gees",
+  sport_director: "Olaniran Isaac",
+  public_relation_officers: "Emmanuel Victory and Joseph Benjamin",
+  financial_secretary: "Ogunjobi Joshua",
+  welfare_officer: "Olusola Grace",
+  treasurer: "Emokpae Shukurat",
   image_url: [
     "/assets/general pics.png"
   ],
@@ -168,6 +179,14 @@ Number of Lecturers: ${departmentData.number_of_lecturers}
 direction: ${departmentData.direction}
 hoc HND2: ${departmentData.head_of_class_HND2}
 assistant hoc HND2: ${departmentData.assistant_head_of_class_HND2}
+departmental president: ${departmentData.president}
+departmental vice president 1: ${departmentData.vice_president1}
+departmental vice president 2: ${departmentData.vice_president2}
+departmental treasurer: ${departmentData.treasurer}
+departmental general secretary: ${departmentData.general_secretary}
+departmental software director: ${departmentData.software_director}
+departmental sport director: ${departmentData.sport_director}
+departmental software director: ${departmentData.software_director}
 
 ` : ''}
 `.trim();
