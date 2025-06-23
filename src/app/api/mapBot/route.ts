@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+interface SerperResult {
+  title: string;
+  link: string;
+  snippet?: string;
+  date?: string;
+}
+
+
 async function callTogetherAPI(prompt: string, apiKey: string): Promise<string> {
   const response = await fetch('https://api.together.xyz/v1/chat/completions', {
     method: 'POST',
@@ -38,7 +46,7 @@ async function runSerperSearch(prompt: string, apiKey: string): Promise<string> 
   const results = data.organic?.slice(0, 5) || [];
 
   return results
-    .map((r: any, i: number) => {
+    .map((r: SerperResult, i: number) => {
       const dateStr = r.date ? `🗓️ ${r.date}\n` : '';
       return `${i + 1}. **${r.title}**\n${dateStr}${r.snippet || ''}\n[Read more](${r.link})`;
     })
