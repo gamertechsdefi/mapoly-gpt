@@ -1,74 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
-import cheerio from 'cheerio';
 
-async function fetchMapolyBlogNews(): Promise<string> {
-  try {
-    const url = 'https://www.myschoolgist.com/ng/tag/www-mapoly-edu-ng/';
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-      },
-    });
-    const $ = cheerio.load(response.data);
+async function callTogetherAPI(prompt: string, apiKey: string): Promise<string> {
+  const response = await fetch('https://api.together.xyz/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: 'meta-llama/Llama-3-70b-chat-hf',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 500,
+      temperature: 0.7,
+    }),
+  });
 
-    const articles = $('.post')
-      .map((i, el) => {
-        const title = $(el).find('.entry-title a').text().trim() || 'No title';
-        const summary =
-          $(el).find('.entry-content p').first().text().trim() || 'No summary';
-        const link = $(el).find('.entry-title a').attr('href') || url;
-        return `${i + 1}. **${title}**: ${summary} [Read more](${link})`;
-      })
-      .get()
-      .slice(0, 5)
-      .join('\n');
-
-    return articles || 'No recent news found on the Mapoly blog.';
-  } catch (error) {
-    console.error('Error fetching Mapoly blog:', error);
-    return 'Failed to fetch news from the Mapoly blog. Please try again later.';
-  }
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content || 'No response generated.';
 }
 
-async function callGrokAPI(prompt: string, apiKey: string): Promise<string> {
-  const apiEndpoint = 'https://api.x.ai/v1/chat/completions';
-  try {
-    const response = await fetch(apiEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'grok-2-latest',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 500,
-        temperature: 0.7,
-      }),
-    });
+async function runSerperSearch(prompt: string, apiKey: string): Promise<string> {
+  const response = await fetch('https://google.serper.dev/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-KEY': apiKey,
+    },
+    body: JSON.stringify({ q: prompt, gl: 'ng', hl: 'en' }),
+  });
 
-    const contentType = response.headers.get('content-type');
-    if (!response.ok) {
-      const responseText = await response.text();
-      throw new Error(
-        `API request failed with status ${response.status}: ${responseText}`
-      );
-    }
-    if (!contentType?.includes('application/json')) {
-      const responseText = await response.text();
-      throw new Error(
-        `Unexpected response type: ${contentType}. Body: ${responseText}`
-      );
-    }
-
-    const data = await response.json();
-    return data.choices?.[0]?.message?.content || 'No response generated.';
-  } catch (error) {
-    console.error('Error calling Grok API:', error);
-    throw error;
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Serper.dev failed: ${errText}`);
   }
+
+  const data = await response.json();
+  const results = data.organic?.slice(0, 5) || [];
+
+  return results
+    .map((r: any, i: number) => {
+      const dateStr = r.date ? `🗓️ ${r.date}\n` : '';
+      return `${i + 1}. **${r.title}**\n${dateStr}${r.snippet || ''}\n[Read more](${r.link})`;
+    })
+    .join('\n\n') || 'No relevant search results found.';
 }
 
 export async function POST(request: NextRequest) {
@@ -79,81 +53,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No prompt provided' }, { status: 400 });
     }
 
-    const apiKey = process.env.GROK_API_KEY;
-    if (!apiKey) {
-      throw new Error('API key not configured');
-    }
+    const togetherApiKey = process.env.TOGETHER_API_KEY!;
+    const serperApiKey = process.env.SERPER_API_KEY!;
 
-    const lowerPrompt = prompt.toLowerCase();
-    if (
-      lowerPrompt.includes('mapoly') &&
-      (lowerPrompt.includes('news') ||
-        lowerPrompt.includes('information') ||
-        lowerPrompt.includes('updates'))
-    ) {
-      const news = await fetchMapolyBlogNews();
-      return NextResponse.json({ response: news });
-    }
+    // 🧠 Pre-prompt to assume MAPOLY context
+    const prePrompt = `You are MapGPT, an AI assistant focused exclusively on Moshood Abiola Polytechnic (MAPOLY), Abeokuta, Nigeria. Use the following information to answer this MAPOLY-related question accurately:\n\n`;
 
-    const contexts = {
-      computerScienceHOD: `
-        At Moshood Abiola Polytechnic (MAPOLY), the Computer Science department is led by Dr. Orunsholu as the Head of Department (HOD).`,
-      computerScienceLocation: `
-        It is located opposite the bus shed area on campus.
-      `,
-      computerScienceRooms: `
-        There are 12 rooms in the computer science department.
-      `,
-      computerScienceFormerHOD: `
-        The former HOD name is Mr. Adebayo
-      `,
-coursesOfferedHND2: `
-        The HND2 of Computer Science department are currently offering 7 courses 
-      `,
-coursesOfferedHND1: `
-        The HND1 of Computer Science department are currently offering 8 courses 
-      `,
-coursesOfferedND1: `
-        The HND1 of Computer Science department are currently offering 12 courses`,
-coursesOfferedND2: `
-        The ND2 of Computer Science department are currently offering 10 courses`,
-websiteLink: `
-        The website link of the computer science is nacosmapoly.com `,
-      sugman: `
-        Sugman is the nickname for Mr. Adebesin, one of the top lecturers in the Computer Science department
-      `,
-schoolOfScienceAndTechCoursesInMapoly: `
-        There are 8 courses offered in Moshood Abiola Polytechnic as of the moment
-      `,
-schoolOfCommunicationCoursesInMapoly: `
-        There are 3 courses offered in Communication & Information Technology in Moshood Abiola Polytechnic as of the moment
-      `,
-schoolOfEngineeringCoursesInMapoly: `
-        There are 4 courses offered in School of Engineering in Moshood Abiola Polytechnic as of the moment
-      `,
-schoolOfEnviromentalStudiesCoursesInMapoly: `
-        There are 6 courses offered in school of Environmental Studies in Moshood Abiola Polytechnic as of the moment
-      `,
-    };
+    const searchResults = await runSerperSearch(prompt, serperApiKey);
 
-    let finalPrompt = prompt;
-    if (lowerPrompt.includes('computer science')) {
-      const csContext = [
-        contexts.computerScienceHOD,
-        contexts.computerScienceLocation,
-        contexts.computerScienceRooms,
-        contexts.computerScienceFormerHOD,
-        contexts.sugman,
-      ].join(' ');
-      finalPrompt = `${prompt}. Additional context: ${csContext}`;
-    } else if (lowerPrompt.includes('electrical')) {
-      finalPrompt = prompt; // No context for electrical yet
-    }
+    const finalAnswer = await callTogetherAPI(
+      `${prePrompt}${searchResults}\n\nQuestion: ${prompt}`,
+      togetherApiKey
+    );
 
-    const grokResponse = await callGrokAPI(finalPrompt, apiKey);
-    return NextResponse.json({ response: grokResponse });
+    return NextResponse.json({ response: finalAnswer });
   } catch (error) {
-    console.error('Error in API route:', error);
+    console.error('API error:', error);
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Failed to process request',
