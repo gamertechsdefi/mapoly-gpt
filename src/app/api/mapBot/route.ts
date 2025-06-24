@@ -10,7 +10,6 @@ interface SerperResult {
 function parseDate(dateStr?: string): number {
   if (!dateStr) return 0;
 
-  // Handle relative date strings like "1 day ago"
   const match = dateStr.toLowerCase().match(/(\d+)\s+(minute|hour|day|week)s?\s+ago/);
   if (match) {
     const [, amountStr, unit] = match;
@@ -25,14 +24,11 @@ function parseDate(dateStr?: string): number {
     return now.getTime();
   }
 
-  // Attempt direct parsing (e.g. "Jun 6, 2025")
   const parsed = Date.parse(dateStr);
   return isNaN(parsed) ? 0 : parsed;
 }
 
-
-
-export async function getLatestMapolyNews(apiKey: string): Promise<string> {
+async function getLatestMapolyNews(apiKey: string): Promise<string> {
   const now = Date.now();
   const oneMonthAgo = now - 1000 * 60 * 60 * 24 * 30;
 
@@ -78,7 +74,6 @@ export async function getLatestMapolyNews(apiKey: string): Promise<string> {
     })
     .join('\n\n') || 'No recent MAPOLY news found.';
 }
-
 
 async function runSerperSearch(prompt: string, apiKey: string): Promise<string> {
   const response = await fetch('https://google.serper.dev/search', {
