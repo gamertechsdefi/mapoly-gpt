@@ -174,7 +174,7 @@ export default function Home() {
     },
       React.createElement('h1', {
         className: 'text-3xl font-bold tracking-tight'
-      }, 'Mapoly GPT Chat'),
+      }, 'MapitesGPT'),
       React.createElement('button', {
         onClick: () => setIsDarkMode(!isDarkMode),
         className: 'p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors',
@@ -188,34 +188,30 @@ export default function Home() {
       className: 'flex-grow flex flex-col w-full max-w-3xl mx-auto px-4 py-6 overflow-y-auto'
     },
       history.length === 0 && !error && !isLoading && React.createElement('div', {
-        className: 'flex-grow flex items-center justify-center text-gray-500 dark:text-gray-400'
+      className: 'flex-grow flex items-center justify-center text-gray-500 dark:text-gray-400'
       },
-        React.createElement('p', null, 'Start a conversation by asking about Mapoly or the Computer Science department...')
+      React.createElement('p', null, 'Start a conversation by asking about Mapoly or the Computer Science department...')
       ),
       history.map((message: Message, index: number) =>
-        React.createElement('div', {
-          key: index,
-          className: `mb-4 p-4 rounded-lg ${message.role === 'user' 
-            ? (isDarkMode ? 'bg-green-900/50 border-green-700' : 'bg-green-100 border-green-300') 
-            : (isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200')} border shadow-sm animate-in fade-in slide-in-from-bottom-4 max-w-full break-words`
-        },
-          React.createElement('p', {
-            className: `font-semibold ${message.role === 'user' ? 'text-green-600 dark:text-green-300' : 'text-gray-700 dark:text-gray-300'}`
-          }, message.role === 'user' ? 'You' : 'MapGPT'),
-          renderMessageContent(message.content)
-        )
+      React.createElement('div', {
+        key: index,
+        className: `mb-4 p-4 rounded-lg ${message.role === 'user' 
+        ? (isDarkMode ? 'bg-green-900/50 border-green-700' : 'bg-green-100 border-green-300') 
+        : (isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200')} border shadow-sm animate-in fade-in slide-in-from-bottom-4 max-w-full break-words`
+      },
+        renderMessageContent(message.content)
+      )
       ),
       error && React.createElement('div', {
-        className: 'mb-4 p-4 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 animate-in fade-in'
+      className: 'mb-4 p-4 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 animate-in fade-in'
       },
-        React.createElement('p', { className: 'font-semibold' }, 'Error'),
-        React.createElement('p', null, error)
+      React.createElement('p', { className: 'font-semibold' }, 'Error'),
+      React.createElement('p', null, error)
       ),
       isLoading && React.createElement('div', {
-        className: 'mb-4 p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 animate-pulse'
+      className: 'mb-4 p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 animate-pulse'
       },
-        React.createElement('p', { className: 'font-semibold text-gray-700 dark:text-gray-300' }, 'MapGPT'),
-        React.createElement('p', { className: 'mt-1 text-gray-500 dark:text-gray-400' }, 'Thinking...')
+      React.createElement('p', { className: 'mt-1 text-gray-500 dark:text-gray-400' }, 'Thinking...')
       )
     ),
 
